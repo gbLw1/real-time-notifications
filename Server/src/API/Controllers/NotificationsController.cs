@@ -1,0 +1,182 @@
+using FluentValidation;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using RTN.API.Data;
+using RTN.API.Entities;
+using RTN.API.Shared.Args;
+using RTN.API.Shared.Args.Validations;
+using RTN.API.Shared.Models;
+
+namespace RTN.API.Controllers;
+
+[ApiController]
+[Route("[controller]")]
+public class NotificationsController(
+    ILogger<NotificationsController> logger,
+    MyDbContext dbContext) : ControllerBase
+{
+    [HttpGet]
+    public async Task<IActionResult> Get()
+    {
+        try
+        {
+            logger.LogInformation("Getting notifications.");
+
+            var notifications = await dbContext.Notifications
+                .Select(n => new NotificationModel
+                {
+                    Id = n.Id,
+                    Content = n.Content,
+                    RedirectUrl = n.RedirectUrl,
+                    IsRead = n.IsRead
+                })
+                .ToListAsync();
+
+            return Ok(notifications);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to get notifications.");
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet("{id:guid}")]
+    public async Task<IActionResult> Get(Guid Id)
+    {
+        try
+        {
+            logger.LogInformation("Getting notification.");
+
+            var notification = await dbContext.Notifications
+                .Select(n => new NotificationModel
+                {
+                    Id = n.Id,
+                    Content = n.Content,
+                    RedirectUrl = n.RedirectUrl,
+                    IsRead = n.IsRead
+                })
+                .FirstOrDefaultAsync(n => n.Id == Id)
+                ?? throw new InvalidOperationException("Notification not found.");
+
+            return Ok(notification);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to get notification.");
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> Post([FromBody] NotificationPostArgs args)
+    {
+        try
+        {
+            logger.LogInformation("Creating notification.");
+
+            new NotificationPostArgsValidator().ValidateAndThrow(args);
+
+            var notification = new NotificationEntity
+            {
+                Content = args.Content,
+                RedirectUrl = args.RedirectUrl,
+                IsRead = false
+            };
+
+            dbContext.Notifications.Add(notification);
+            await dbContext.SaveChangesAsync();
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to create notification.");
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut("{id:guid}")]
+    public async Task<IActionResult> Put(Guid Id, [FromBody] NotificationPutArgs args)
+    {
+        try
+        {
+            logger.LogInformation("Updating notification.");
+
+            new NotificationPutArgsValidator().ValidateAndThrow(args);
+
+            var notification = await dbContext.Notifications
+                .FirstOrDefaultAsync(n => n.Id == Id)
+                ?? throw new InvalidOperationException("Notification not found.");
+
+            notification.Content = args.Content;
+            notification.RedirectUrl = args.RedirectUrl;
+
+            dbContext.Notifications.Update(notification);
+            await dbContext.SaveChangesAsync();
+
+            var result = new NotificationModel
+            {
+                Id = notification.Id,
+                Content = notification.Content,
+                RedirectUrl = notification.RedirectUrl,
+                IsRead = notification.IsRead
+            };
+
+            return Ok(result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to update notification.");
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete("{id:guid}")]
+    public async Task<IActionResult> Delete(Guid Id)
+    {
+        try
+        {
+            logger.LogInformation("Deleting notification.");
+
+            var notification = await dbContext.Notifications
+                .FirstOrDefaultAsync(n => n.Id == Id)
+                ?? throw new InvalidOperationException("Notification not found.");
+
+            dbContext.Notifications.Remove(notification);
+            await dbContext.SaveChangesAsync();
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to delete notification.");
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPatch("{id:guid}/toggle-read")]
+    public async Task<IActionResult> ToggleRead(Guid Id)
+    {
+        try
+        {
+            logger.LogInformation("Toggling notification read status.");
+
+            var notification = await dbContext.Notifications
+                .FirstOrDefaultAsync(n => n.Id == Id)
+                ?? throw new InvalidOperationException("Notification not found.");
+
+            notification.IsRead = !notification.IsRead;
+
+            dbContext.Notifications.Update(notification);
+            await dbContext.SaveChangesAsync();
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to toggle notification read status.");
+            return BadRequest(ex.Message);
+        }
+    }
+}
