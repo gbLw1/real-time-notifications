@@ -2,7 +2,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RTN.API.Data;
-using RTN.API.Entities;
+using RTN.API.Data.Entities;
 using RTN.API.Shared.Args;
 using RTN.API.Shared.Args.Validations;
 using RTN.API.Shared.Models;
@@ -113,6 +113,7 @@ public class NotificationsController(
 
             notification.Content = args.Content;
             notification.RedirectUrl = args.RedirectUrl;
+            notification.IsRead = args.IsRead;
 
             dbContext.Notifications.Update(notification);
             await dbContext.SaveChangesAsync();

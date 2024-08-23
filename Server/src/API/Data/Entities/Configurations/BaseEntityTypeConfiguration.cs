@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace RTN.API.Entities.Configurations;
+namespace RTN.API.Data.Entities.Configurations;
 
 public abstract class BaseEntityTypeConfiguration<TEntity>
     : IEntityTypeConfiguration<TEntity> where TEntity : BaseEntity

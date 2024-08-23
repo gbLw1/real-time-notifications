@@ -1,4 +1,4 @@
-namespace RTN.API.Entities;
+namespace RTN.API.Data.Entities;
 
 public class BaseEntity
 {

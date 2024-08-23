@@ -1,7 +1,6 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace RTN.API.Entities.Configurations;
+namespace RTN.API.Data.Entities.Configurations;
 
 public class NotificationEntityConfiguration
     : BaseEntityTypeConfiguration<NotificationEntity>

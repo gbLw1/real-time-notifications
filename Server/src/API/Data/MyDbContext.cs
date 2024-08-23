@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using RTN.API.Entities;
+using RTN.API.Data.Entities;
 
 namespace RTN.API.Data;
 
