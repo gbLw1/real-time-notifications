@@ -1,0 +1,8 @@
+namespace RTN.API.Entities;
+
+public class NotificationEntity : BaseEntity
+{
+    public required string Content { get; set; }
+    public string? RedirectUrl { get; set; }
+    public bool IsRead { get; set; }
+}
