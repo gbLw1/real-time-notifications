@@ -8,6 +8,12 @@ public class NotificationPostArgsValidator : AbstractValidator<NotificationPostA
     {
         RuleFor(x => x.Content)
             .NotEmpty()
-            .WithMessage("Content is required.");
+            .WithMessage("Content is required.")
+            .MaximumLength(250)
+            .WithMessage("Content must not exceed 250 characters.");
+
+        RuleFor(x => x.RedirectUrl)
+            .MaximumLength(250)
+            .WithMessage("Redirect URL must not exceed 250 characters.");
     }
 }

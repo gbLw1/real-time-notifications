@@ -3,20 +3,21 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace RTN.API.Entities.Configurations;
 
-public class NotificationEntityConfiguration : IEntityTypeConfiguration<NotificationEntity>
+public class NotificationEntityConfiguration
+    : BaseEntityTypeConfiguration<NotificationEntity>
 {
-    public void Configure(EntityTypeBuilder<NotificationEntity> builder)
+    public override void Configure(EntityTypeBuilder<NotificationEntity> builder)
     {
-        builder.ToTable("Notifications");
+        base.Configure(builder);
 
-        builder.HasKey(x => x.Id);
-        builder.Property(x => x.Id)
-            .ValueGeneratedOnAdd();
+        builder.Property(p => p.Content)
+            .IsRequired()
+            .HasMaxLength(250);
 
-        builder.Property(x => x.Content)
+        builder.Property(p => p.RedirectUrl)
+            .HasMaxLength(250);
+
+        builder.Property(p => p.IsRead)
             .IsRequired();
-
-        builder.Property(x => x.RedirectUrl)
-            .IsRequired(false);
     }
 }
