@@ -41,7 +41,7 @@ public class NotificationsController(
         }
     }
 
-    [HttpGet("{id:guid}")]
+    [HttpGet("{Id:guid}")]
     public async Task<IActionResult> Get(Guid Id)
     {
         try
@@ -96,8 +96,10 @@ public class NotificationsController(
         }
     }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> Put(Guid Id, [FromBody] NotificationPutArgs args)
+    [HttpPut("{Id:guid}")]
+    public async Task<IActionResult> Put(
+        [FromRoute] Guid Id,
+        [FromBody] NotificationPutArgs args)
     {
         try
         {
@@ -132,7 +134,7 @@ public class NotificationsController(
         }
     }
 
-    [HttpDelete("{id:guid}")]
+    [HttpDelete("{Id:guid}")]
     public async Task<IActionResult> Delete(Guid Id)
     {
         try
@@ -155,7 +157,7 @@ public class NotificationsController(
         }
     }
 
-    [HttpPatch("{id:guid}/toggle-read")]
+    [HttpPatch("{Id:guid}/toggle-read")]
     public async Task<IActionResult> ToggleRead(Guid Id)
     {
         try
