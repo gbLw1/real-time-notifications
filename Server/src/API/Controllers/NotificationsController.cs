@@ -13,7 +13,8 @@ namespace RTN.API.Controllers;
 [Route("[controller]")]
 public class NotificationsController(
     ILogger<NotificationsController> logger,
-    MyDbContext dbContext) : ControllerBase
+    MyDbContext dbContext)
+    : ControllerBase
 {
     [HttpGet]
     public async Task<IActionResult> Get()
