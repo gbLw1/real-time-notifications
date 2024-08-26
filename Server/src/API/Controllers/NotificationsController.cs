@@ -23,7 +23,7 @@ public class NotificationsController(
         {
             logger.LogInformation("Getting notifications.");
 
-            var notifications = await dbContext.Notifications
+            var notifications = await dbContext.Set<NotificationEntity>()
                 .Select(n => new NotificationModel
                 {
                     Id = n.Id,
@@ -49,7 +49,7 @@ public class NotificationsController(
         {
             logger.LogInformation("Getting notification.");
 
-            var notification = await dbContext.Notifications
+            var notification = await dbContext.Set<NotificationEntity>()
                 .Select(n => new NotificationModel
                 {
                     Id = n.Id,
@@ -85,7 +85,7 @@ public class NotificationsController(
                 IsRead = false
             };
 
-            dbContext.Notifications.Add(notification);
+            dbContext.Set<NotificationEntity>().Add(notification);
             await dbContext.SaveChangesAsync();
 
             return NoContent();
@@ -108,7 +108,7 @@ public class NotificationsController(
 
             new NotificationPutArgsValidator().ValidateAndThrow(args);
 
-            var notification = await dbContext.Notifications
+            var notification = await dbContext.Set<NotificationEntity>()
                 .FirstOrDefaultAsync(n => n.Id == Id)
                 ?? throw new InvalidOperationException("Notification not found.");
 
@@ -116,7 +116,7 @@ public class NotificationsController(
             notification.RedirectUrl = args.RedirectUrl;
             notification.IsRead = args.IsRead;
 
-            dbContext.Notifications.Update(notification);
+            dbContext.Set<NotificationEntity>().Update(notification);
             await dbContext.SaveChangesAsync();
 
             var result = new NotificationModel
@@ -143,11 +143,11 @@ public class NotificationsController(
         {
             logger.LogInformation("Deleting notification.");
 
-            var notification = await dbContext.Notifications
+            var notification = await dbContext.Set<NotificationEntity>()
                 .FirstOrDefaultAsync(n => n.Id == Id)
                 ?? throw new InvalidOperationException("Notification not found.");
 
-            dbContext.Notifications.Remove(notification);
+            dbContext.Set<NotificationEntity>().Remove(notification);
             await dbContext.SaveChangesAsync();
 
             return NoContent();
@@ -166,13 +166,13 @@ public class NotificationsController(
         {
             logger.LogInformation("Toggling notification read status.");
 
-            var notification = await dbContext.Notifications
+            var notification = await dbContext.Set<NotificationEntity>()
                 .FirstOrDefaultAsync(n => n.Id == Id)
                 ?? throw new InvalidOperationException("Notification not found.");
 
             notification.IsRead = !notification.IsRead;
 
-            dbContext.Notifications.Update(notification);
+            dbContext.Set<NotificationEntity>().Update(notification);
             await dbContext.SaveChangesAsync();
 
             return NoContent();
