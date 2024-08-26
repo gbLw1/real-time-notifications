@@ -9,14 +9,19 @@ public class NotificationEntityConfiguration
     {
         base.Configure(builder);
 
-        builder.Property(p => p.Content)
+        builder.Property(n => n.Content)
             .IsRequired()
             .HasMaxLength(250);
 
-        builder.Property(p => p.RedirectUrl)
+        builder.Property(n => n.RedirectUrl)
             .HasMaxLength(250);
 
-        builder.Property(p => p.IsRead)
+        builder.Property(n => n.IsRead)
             .IsRequired();
+
+        builder.HasOne(n => n.User)
+            .WithMany(u => u.Notifications)
+            .HasForeignKey(n => n.UserId)
+            .IsRequired(false);
     }
 }

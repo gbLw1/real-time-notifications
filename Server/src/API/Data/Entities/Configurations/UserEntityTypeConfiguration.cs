@@ -20,5 +20,10 @@ public class UserEntityTypeConfiguration : BaseEntityTypeConfiguration<UserEntit
         .WithOne(l => l.User)
         .HasForeignKey(l => l.UserId)
         .IsRequired();
+
+        builder.HasMany(u => u.Notifications)
+            .WithOne(n => n.User)
+            .HasForeignKey(n => n.UserId)
+            .IsRequired(false);
     }
 }
