@@ -5,6 +5,7 @@ using RTN.API.Data;
 using RTN.API.Data.Entities;
 using RTN.API.Shared.Args;
 using RTN.API.Shared.Args.Validations;
+using RTN.API.Shared.Extensions;
 using RTN.API.Shared.Models;
 
 namespace RTN.API.Controllers;
@@ -21,9 +22,13 @@ public class NotificationsController(
     {
         try
         {
-            logger.LogInformation("Getting notifications.");
+            logger.LogInformation("Getting user notifications.");
 
-            var notifications = await dbContext.Set<NotificationEntity>()
+            var authToken = await Request.GetAuthTokenAsync(dbContext);
+
+            var notifications = await dbContext
+                .Set<NotificationEntity>()
+                .Where(n => n.UserId == authToken.UserId)
                 .Select(n => new NotificationModel
                 {
                     Id = n.Id,
@@ -34,6 +39,11 @@ public class NotificationsController(
                 .ToListAsync();
 
             return Ok(notifications);
+        }
+        catch (UnauthorizedAccessException ex)
+        {
+            logger.LogWarning(ex, "Unauthorized access.");
+            return Unauthorized(ex.Message);
         }
         catch (Exception ex)
         {
