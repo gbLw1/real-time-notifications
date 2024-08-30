@@ -15,5 +15,5 @@ Also, I might use this project as a base for future implementations in my curren
 ## Progress
 
 - [x] Web API CRUD
-- [ ] WebSocket Server
+- [x] WebSocket Server
 - [ ] React client
