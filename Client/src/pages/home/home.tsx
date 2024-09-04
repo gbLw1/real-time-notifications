@@ -1,6 +1,15 @@
+import { useEffect } from "react";
 import { socket } from "../../socket";
 
 export default function Home() {
+  useEffect(() => {
+    socket.connect();
+
+    return () => {
+      socket.disconnect();
+    };
+  }, []);
+
   return (
     <div className="h-screen w-screen flex flex-col items-center justify-center bg-slate-800">
       <h1 className="text-3xl font-bold underline text-slate-200">
