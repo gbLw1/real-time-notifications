@@ -16,4 +16,9 @@ Also, I might use this project as a base for future implementations in my curren
 
 - [x] Web API CRUD
 - [x] WebSocket Server
-- [ ] React client
+- [x] React client
+
+## TODO
+
+- Find a NuGet package to handle the WebSocket client in the dotnet core web api
+- Add a socket room on user login to handle individual notifications
