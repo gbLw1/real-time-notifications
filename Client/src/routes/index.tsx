@@ -12,12 +12,10 @@ export type GlobalNotification = {
 function App() {
   useEffect(() => {
     function onConnect() {
-      console.log("Connected to server");
       toast.success("Connected to server");
     }
 
     function onReceiveGlobal(data: GlobalNotification) {
-      console.log(data);
       toast.success(data.message);
     }
 

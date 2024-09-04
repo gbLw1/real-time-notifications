@@ -23,8 +23,12 @@ io.on("connection", (socket) => {
   });
 
   socket.on("global", (data) => {
-    console.log("Global message received:", `${socket.id}: ${data.message}`);
-    socket.broadcast.emit("receive_global", `${socket.id}: ${data.message}`);
+    console.log("Global message received:", {
+      message: `${socket.id}: ${data.message}`,
+    });
+    socket.broadcast.emit("receive_global", {
+      message: `${socket.id}: ${data.message}`,
+    });
   });
 
   socket.on("individual", (data) => {
