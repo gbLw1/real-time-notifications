@@ -2,11 +2,11 @@ import express from "express";
 const app = express();
 import { createServer } from "http";
 import { Server } from "socket.io";
+import cors from "cors";
+
+app.use(cors());
 
 const port = 3069;
-
-import cors from "cors";
-app.use(cors());
 
 const server = createServer(app);
 const io = new Server(server, {
@@ -22,12 +22,14 @@ io.on("connection", (socket) => {
     socket.join(data);
   });
 
-  socket.on("send_global_notification", (data) => {
-    socket.broadcast.emit("receive_global_notification", data.message);
+  socket.on("global", (data) => {
+    console.log("Global message received:", `${socket.id}: ${data.message}`);
+    socket.broadcast.emit("receive_global", `${socket.id}: ${data.message}`);
   });
 
-  socket.on("send_individual_notification", (data) => {
-    socket.to(data.room).emit("receive_individual_notification", data.message);
+  socket.on("individual", (data) => {
+    console.log("Individual message received:", data.message);
+    socket.to(data.room).emit("receive_individual", data.message);
   });
 
   socket.on("disconnect", () => {
