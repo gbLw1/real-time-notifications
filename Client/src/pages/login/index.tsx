@@ -3,11 +3,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import api from "../../services/client/api";
-
-export interface AuthTokenArgs {
-  user?: string | null;
-  password?: string | null;
-}
+import { LoginArgs } from "../../interfaces/arguments/login.args";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -17,14 +13,14 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
     register,
-  } = useForm<AuthTokenArgs>({
+  } = useForm<LoginArgs>({
     defaultValues: {
-      user: "",
+      email: "",
       password: "",
     },
   });
 
-  const handleLogin = async (data: AuthTokenArgs) => {
+  const handleLogin = async (data: LoginArgs) => {
     setLoading(true);
 
     api
@@ -61,9 +57,9 @@ export default function Login() {
             type="text"
             placeholder="Usuário"
             className="w-full p-2 border border-gray-300 rounded-lg"
-            {...register("user", { required: true })}
+            {...register("email", { required: true })}
           />
-          {errors.user && (
+          {errors.email && (
             <span className="text-red-500">Campo obrigatório</span>
           )}
         </div>

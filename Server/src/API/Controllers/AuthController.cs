@@ -48,7 +48,8 @@ public class AuthController(
             {
                 AuthToken = authToken,
                 ExpiresIn = expiresIn,
-                RefreshToken = refreshToken
+                RefreshToken = refreshToken,
+                SocketRoom = $"{Guid.NewGuid()}{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}"
             });
         }
         catch (UnauthorizedAccessException ex)
@@ -110,7 +111,8 @@ public class AuthController(
         catch (Exception ex)
         {
             logger.LogError(ex, "Failed to register.");
-            if (dbContext.Database.CurrentTransaction is not null) {
+            if (dbContext.Database.CurrentTransaction is not null)
+            {
                 await dbContext.Database.RollbackTransactionAsync();
             }
             return BadRequest(ex.Message);
