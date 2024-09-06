@@ -26,3 +26,8 @@ Also, I might use this project as a base for future implementations in my curren
 - Private Routes
 - User logout
 - Subscribe to individual notifications (auth token)
+
+### Server
+
+- Swagger documentation (summary)
+- Swagger Authorize Endpoint
