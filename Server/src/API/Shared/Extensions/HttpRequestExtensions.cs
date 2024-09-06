@@ -1,3 +1,6 @@
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using RTN.API.Data;
 using RTN.API.Data.Entities;
@@ -31,5 +34,29 @@ public static class HttpRequestExtensions
             ?? throw new UnauthorizedAccessException("Token is invalid or expired.");
 
         return new AuthTokenModel(guidToken, login.UserId);
+    }
+
+    public class NotificationMessage(string message, Guid? roomId)
+    {
+        [JsonPropertyName("message")]
+        public string Message { get; set; } = message;
+        [JsonPropertyName("roomId")]
+        public Guid? RoomId { get; set; } = roomId;
+    }
+    public static async Task SendNotificationAsync(string message, Guid? roomId = null)
+    {
+        NotificationMessage bodyObj = new(message, null);
+
+        if (roomId is not null)
+        {
+            bodyObj.RoomId = roomId;
+        }
+
+        var jsonContent = JsonSerializer.Serialize(bodyObj);
+        var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+        using var httpClient = new HttpClient();
+        var response = await httpClient.PostAsync("http://localhost:3069/send-notification", content);
+        response.EnsureSuccessStatusCode();
     }
 }

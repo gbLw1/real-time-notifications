@@ -2,7 +2,7 @@ using System.Text.Json.Serialization;
 
 namespace RTN.API.Shared.Models;
 
-public class LoginModel
+public class AuthTokenModel
 {
     [JsonPropertyName("authToken")]
     public required Guid AuthToken { get; set; }
@@ -11,5 +11,5 @@ public class LoginModel
     [JsonPropertyName("refreshToken")]
     public required Guid RefreshToken { get; set; }
     [JsonPropertyName("socketRoom")]
-    public required string SocketRoom { get; set; }
+    public required Guid SocketRoom { get; set; }
 }

@@ -1,3 +1,4 @@
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RTN.API.Data;
@@ -15,11 +16,13 @@ public class AuthController(
     : ControllerBase
 {
     [HttpPost("login")]
-    public async Task<IActionResult> Login(LoginArgs args)
+    public async Task<IActionResult> Login(AuthTokenArgs args)
     {
         try
         {
             logger.LogInformation("Logging in.");
+
+            new AuthTokenArgs.Validator().ValidateAndThrow(args);
 
             var login = await dbContext.Set<LoginEntity>()
                 .Include(l => l.User)
@@ -44,12 +47,12 @@ public class AuthController(
             dbContext.Update(login);
             await dbContext.SaveChangesAsync();
 
-            return Ok(new LoginModel
+            return Ok(new AuthTokenModel
             {
                 AuthToken = authToken,
                 ExpiresIn = expiresIn,
                 RefreshToken = refreshToken,
-                SocketRoom = $"{Guid.NewGuid()}{DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()}"
+                SocketRoom = login.UserId,
             });
         }
         catch (UnauthorizedAccessException ex)
@@ -70,6 +73,8 @@ public class AuthController(
         try
         {
             logger.LogInformation("Registering.");
+
+            new RegisterArgs.Validator().ValidateAndThrow(args);
 
             var user = await dbContext.Set<UserEntity>()
                 .FirstOrDefaultAsync(u => u.Email == args.Email);

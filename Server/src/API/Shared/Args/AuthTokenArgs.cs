@@ -3,27 +3,18 @@ using FluentValidation;
 
 namespace RTN.API.Shared.Args;
 
-public class RegisterArgs
+public class AuthTokenArgs
 {
-    [JsonPropertyName("name")]
-    public required string Name { get; set; }
-
     [JsonPropertyName("email")]
     public required string Email { get; set; }
 
     [JsonPropertyName("password")]
     public required string Password { get; set; }
 
-    public class Validator : AbstractValidator<RegisterArgs>
+    public class Validator : AbstractValidator<AuthTokenArgs>
     {
         public Validator()
         {
-            RuleFor(x => x.Name)
-                .NotEmpty()
-                .WithMessage("Name is required.")
-                .MaximumLength(250)
-                .WithMessage("Name must not exceed 250 characters.");
-
             RuleFor(x => x.Email)
                 .NotEmpty()
                 .WithMessage("Email is required.")

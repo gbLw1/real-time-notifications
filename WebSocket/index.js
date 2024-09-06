@@ -55,6 +55,7 @@ app.post("/send-notification", (req, res) => {
     io.emit("receive_global", { message });
   }
 
+  console.log("Notification sent:", { message, roomId });
   res.send("Notification sent");
 });
 
