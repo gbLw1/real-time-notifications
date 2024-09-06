@@ -17,7 +17,3 @@ Also, I might use this project as a base for future implementations in my curren
 - [x] Web API CRUD
 - [x] WebSocket Server
 - [x] React client
-
-## TODO
-
-- Find a NuGet package to handle the WebSocket client in the dotnet core web api
