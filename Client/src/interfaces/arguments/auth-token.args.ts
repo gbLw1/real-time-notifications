@@ -1,4 +1,4 @@
-export interface LoginArgs {
+export interface AuthTokenArgs {
   email: string;
   password: string;
 }

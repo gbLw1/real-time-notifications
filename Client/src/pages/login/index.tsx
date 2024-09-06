@@ -3,7 +3,8 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "react-toastify";
 import api from "../../services/client/api";
-import { LoginArgs } from "../../interfaces/arguments/login.args";
+import { AuthTokenArgs } from "../../interfaces/arguments/auth-token.args";
+import { AuthTokenModel } from "../../interfaces/models/auth-token.model";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -13,21 +14,20 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
     register,
-  } = useForm<LoginArgs>({
+  } = useForm<AuthTokenArgs>({
     defaultValues: {
       email: "",
       password: "",
     },
   });
 
-  const handleLogin = async (data: LoginArgs) => {
+  const handleLogin = async (data: AuthTokenArgs) => {
     setLoading(true);
 
     api
-      .post("/auth/token", data)
-      .then((response) => {
-        const { result } = response.data;
-        sessionStorage.setItem("auth", JSON.stringify(result));
+      .post<AuthTokenModel>("/auth/token", data)
+      .then(({ data }) => {
+        sessionStorage.setItem("auth", JSON.stringify(data));
         navigate("/");
         toast.success("Bem vindo!");
       })

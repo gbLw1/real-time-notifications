@@ -1,4 +1,4 @@
-export interface LoginModel {
+export interface AuthTokenModel {
   authToken: string;
   expiresIn: Date;
   refreshToken: string;

@@ -9,6 +9,11 @@ using static RTN.API.Shared.Extensions.HttpRequestExtensions;
 
 namespace RTN.API.Controllers;
 
+/// <summary>
+/// The admin notifications controller.
+/// This controller is public just for testing purposes
+/// in a real-world scenario it should be private and only accessible by admins (role-based access control).
+/// </summary>
 [ApiController]
 [Route("[controller]")]
 public class AdminNotificationsController(

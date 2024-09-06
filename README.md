@@ -17,3 +17,12 @@ Also, I might use this project as a base for future implementations in my curren
 - [x] Web API CRUD
 - [x] WebSocket Server
 - [x] React client
+
+## To do
+
+### Client
+
+- Register page
+- Private Routes
+- User logout
+- Subscribe to individual notifications (auth token)
