@@ -1,11 +1,35 @@
 import { useEffect } from "react";
 import { socket } from "../../socket";
+import { AuthTokenModel } from "../../interfaces/models/auth-token.model";
+import { Notification } from "../../routes";
+import { CustomToast } from "../../components/custom-toast";
+import toast, { Toast } from "react-hot-toast";
 
 export default function Home() {
   useEffect(() => {
     socket.connect();
 
+    const { socketRoom }: AuthTokenModel = JSON.parse(
+      sessionStorage.getItem("auth") || "{}"
+    );
+
+    if (!socketRoom) {
+      return;
+    }
+
+    socket.emit("join_room", socketRoom);
+
+    function onIndividual(data: Notification) {
+      const { message } = data;
+      toast.custom((t: Toast) => (
+        <CustomToast type="individual" data={message} toast={t} />
+      ));
+    }
+
+    socket.on("receive_individual", onIndividual);
+
     return () => {
+      socket.off("receive_individual", onIndividual);
       socket.disconnect();
     };
   }, []);
@@ -15,12 +39,6 @@ export default function Home() {
       <h1 className="text-3xl font-bold underline text-slate-200">
         Hello world!
       </h1>
-      <button
-        className="mt-4 bg-slate-500 text-slate-200 px-4 py-2 rounded-md"
-        onClick={() => socket.emit("global", { message: "Hello world!" })}
-      >
-        Send notification
-      </button>
     </div>
   );
 }

@@ -1,10 +1,10 @@
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { toast } from "react-toastify";
 import api from "../../services/client/api";
 import { AuthTokenArgs } from "../../interfaces/arguments/auth-token.args";
 import { AuthTokenModel } from "../../interfaces/models/auth-token.model";
+import toast from "react-hot-toast";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -29,7 +29,6 @@ export default function Login() {
       .then(({ data }) => {
         sessionStorage.setItem("auth", JSON.stringify(data));
         navigate("/");
-        toast.success("Bem vindo!");
       })
       .catch(() => {
         toast.error(

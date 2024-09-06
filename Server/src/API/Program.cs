@@ -40,6 +40,17 @@ builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", builder =>
+    {
+        builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 
 // // config httpclient
 // builder.Services.AddHttpClient<HttpClientOptions, HttpClient>(o => o.BaseAddress = new Uri("https://localhost:5001"))
@@ -53,6 +64,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "RTN.API v1"));
 }
+
+app.UseCors("AllowAll");
 
 app.UseHttpsRedirection();
 

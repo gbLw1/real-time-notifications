@@ -33,8 +33,8 @@ io.on("connection", (socket) => {
   });
 
   socket.on("individual", (data) => {
-    console.log("Individual message received:", data.message);
-    socket.to(data.room).emit("receive_individual", data.message);
+    console.log("Individual message received:", { message: data.message });
+    socket.to(data.room).emit("receive_individual", { message: data.message });
   });
 
   socket.on("disconnect", () => {

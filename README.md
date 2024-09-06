@@ -26,8 +26,15 @@ Also, I might use this project as a base for future implementations in my curren
 - Private Routes
 - User logout
 - Subscribe to individual notifications (auth token)
+- Header notifications dropdown
+  - Notification list
+  - Mark as read
+  - Delete
+  - Mark all as read
+  - Delete all
 
 ### Server
 
 - Swagger documentation (summary)
 - Swagger Authorize Endpoint
+- HttpClient DI

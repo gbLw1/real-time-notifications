@@ -75,10 +75,57 @@ public class AdminNotificationsController(
         }
     }
 
-    [HttpPost("{userId:guid?}")]
-    public async Task<IActionResult> Post(
-        [FromBody] NotificationPostArgs args,
-        [FromRoute] Guid? userId = null)
+    [HttpPost]
+    public async Task<IActionResult> PostGlobal(
+        [FromBody] NotificationPostArgs args)
+    {
+        try
+        {
+            logger.LogInformation("Creating notification.");
+
+            new NotificationPostArgs.Validator().ValidateAndThrow(args);
+
+            var notification = new NotificationEntity
+            {
+                Content = args.Content,
+                RedirectUrl = args.RedirectUrl,
+                IsRead = false,
+            };
+
+            dbContext.Set<NotificationEntity>().Add(notification);
+            await dbContext.SaveChangesAsync();
+
+            try
+            {
+                logger.LogInformation("Sending notification.");
+                await SendNotificationAsync(
+                    message: new NotificationModel
+                    {
+                        Id = notification.Id,
+                        Content = notification.Content,
+                        RedirectUrl = notification.RedirectUrl,
+                        IsRead = notification.IsRead
+                    });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex, "Failed to send notification.");
+                return BadRequest(ex.Message);
+            }
+
+            return NoContent();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to create notification.");
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPost("{userId:guid}")]
+    public async Task<IActionResult> PostIndividual(
+        [FromRoute] Guid userId,
+        [FromBody] NotificationPostArgs args)
     {
         try
         {
@@ -100,7 +147,15 @@ public class AdminNotificationsController(
             try
             {
                 logger.LogInformation("Sending notification.");
-                await SendNotificationAsync(args.Content, userId);
+                await SendNotificationAsync(
+                    message: new NotificationModel
+                    {
+                        Id = notification.Id,
+                        Content = notification.Content,
+                        RedirectUrl = notification.RedirectUrl,
+                        IsRead = notification.IsRead
+                    },
+                    roomId: userId);
             }
             catch (Exception ex)
             {

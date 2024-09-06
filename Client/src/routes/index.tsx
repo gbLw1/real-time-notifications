@@ -1,12 +1,14 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "../pages/home/home";
 import Login from "../pages/login";
-import { toast } from "react-toastify";
 import { useEffect } from "react";
 import { socket } from "../socket";
+import { NotificationModel } from "../interfaces/models/notification.model";
+import { CustomToast } from "../components/custom-toast";
+import toast, { Toast } from "react-hot-toast";
 
-export type GlobalNotification = {
-  message: string;
+export type Notification = {
+  message: NotificationModel;
 };
 
 function App() {
@@ -15,8 +17,11 @@ function App() {
       toast.success("Connected to server");
     }
 
-    function onReceiveGlobal(data: GlobalNotification) {
-      toast.success(data.message);
+    function onReceiveGlobal(data: Notification) {
+      const { message } = data;
+      toast.custom((t: Toast) => (
+        <CustomToast type="global" data={message} toast={t} />
+      ));
     }
 
     socket.on("connect", onConnect);

@@ -15,7 +15,7 @@ public class AuthController(
     MyDbContext dbContext)
     : ControllerBase
 {
-    [HttpPost("login")]
+    [HttpPost("token")]
     public async Task<IActionResult> Login(AuthTokenArgs args)
     {
         try

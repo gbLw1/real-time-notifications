@@ -4,6 +4,7 @@ using System.Text.Json.Serialization;
 using Microsoft.EntityFrameworkCore;
 using RTN.API.Data;
 using RTN.API.Data.Entities;
+using RTN.API.Shared.Models;
 
 namespace RTN.API.Shared.Extensions;
 
@@ -36,16 +37,16 @@ public static class HttpRequestExtensions
         return new AuthTokenModel(guidToken, login.UserId);
     }
 
-    public class NotificationMessage(string message, Guid? roomId)
+    public class NotificationMessage(NotificationModel message, Guid? roomId)
     {
         [JsonPropertyName("message")]
-        public string Message { get; set; } = message;
+        public NotificationModel Message { get; set; } = message;
         [JsonPropertyName("roomId")]
         public Guid? RoomId { get; set; } = roomId;
     }
-    public static async Task SendNotificationAsync(string message, Guid? roomId = null)
+    public static async Task SendNotificationAsync(NotificationModel message, Guid? roomId = null)
     {
-        NotificationMessage bodyObj = new(message, null);
+        NotificationMessage bodyObj = new(message, roomId);
 
         if (roomId is not null)
         {
