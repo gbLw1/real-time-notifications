@@ -40,6 +40,11 @@ builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
 
+
+// // config httpclient
+// builder.Services.AddHttpClient<HttpClientOptions, HttpClient>(o => o.BaseAddress = new Uri("https://localhost:5001"))
+//     .AddPolicyHandlerFromRegistry((services, key) => services.GetRequiredService<IAsyncPolicy<HttpResponseMessage>>(key));
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -56,3 +61,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+record HttpClientOptions(string BaseAddress, string Accept, string UserAgent);

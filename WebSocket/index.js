@@ -5,6 +5,7 @@ import { Server } from "socket.io";
 import cors from "cors";
 
 app.use(cors());
+app.use(express.json());
 
 const port = 3069;
 
@@ -39,6 +40,22 @@ io.on("connection", (socket) => {
   socket.on("disconnect", () => {
     console.log(`User disconnected: ${socket.id}`);
   });
+});
+
+app.post("/send-notification", (req, res) => {
+  const { message, roomId } = req.body;
+
+  if (!message) {
+    return res.status(400).send("Message is required");
+  }
+
+  if (roomId) {
+    io.to(roomId).emit("receive_individual", { message });
+  } else {
+    io.emit("receive_global", { message });
+  }
+
+  res.send("Notification sent");
 });
 
 server.listen(port, () => {

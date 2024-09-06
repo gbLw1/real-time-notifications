@@ -1,3 +1,6 @@
+using System.Text;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -98,6 +101,8 @@ public class NotificationsController(
             dbContext.Set<NotificationEntity>().Add(notification);
             await dbContext.SaveChangesAsync();
 
+            await SendNotificationAsync(args.Content);
+
             return NoContent();
         }
         catch (Exception ex)
@@ -191,6 +196,39 @@ public class NotificationsController(
         {
             logger.LogError(ex, "Failed to toggle notification read status.");
             return BadRequest(ex.Message);
+        }
+    }
+
+    public class NotificationMessage(string message, string? roomId)
+    {
+        [JsonPropertyName("message")]
+        public string Message { get; set; } = message;
+        [JsonPropertyName("roomId")]
+        public string? RoomId { get; set; } = roomId;
+    }
+
+    public async Task SendNotificationAsync(string message, string? roomId = null)
+    {
+        try
+        {
+            NotificationMessage bodyObj = new(message, null);
+
+            if (roomId is not null)
+            {
+                bodyObj.RoomId = roomId;
+            }
+
+            var jsonContent = JsonSerializer.Serialize(bodyObj);
+            var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+            using var httpClient = new HttpClient();
+            var response = await httpClient.PostAsync("http://localhost:3069/send-notification", content);
+
+            response.EnsureSuccessStatusCode();
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to send notification.");
         }
     }
 }
