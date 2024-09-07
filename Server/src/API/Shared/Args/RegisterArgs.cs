@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
+
 using FluentValidation;
 
 namespace RTN.API.Shared.Args;
 
-public class RegisterArgs
-{
+public class RegisterArgs {
     [JsonPropertyName("name")]
     public required string Name { get; set; }
 
@@ -14,10 +14,8 @@ public class RegisterArgs
     [JsonPropertyName("password")]
     public required string Password { get; set; }
 
-    public class Validator : AbstractValidator<RegisterArgs>
-    {
-        public Validator()
-        {
+    public class Validator : AbstractValidator<RegisterArgs> {
+        public Validator() {
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .WithMessage("Name is required.")

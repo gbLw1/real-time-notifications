@@ -1,16 +1,14 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace RTN.API.Migrations
-{
+namespace RTN.API.Migrations {
     /// <inheritdoc />
-    public partial class IndividualNoties : Migration
-    {
+    public partial class IndividualNoties : Migration {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.AddColumn<Guid>(
                 name: "UserId",
                 table: "NotificationEntity",
@@ -31,8 +29,7 @@ namespace RTN.API.Migrations
         }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropForeignKey(
                 name: "FK_NotificationEntity_UserEntity_UserId",
                 table: "NotificationEntity");

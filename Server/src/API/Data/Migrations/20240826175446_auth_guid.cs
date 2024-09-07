@@ -1,16 +1,14 @@
 ﻿using System;
+
 using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace RTN.API.Migrations
-{
+namespace RTN.API.Migrations {
     /// <inheritdoc />
-    public partial class auth_guid : Migration
-    {
+    public partial class auth_guid : Migration {
         /// <inheritdoc />
-        protected override void Up(MigrationBuilder migrationBuilder)
-        {
+        protected override void Up(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropPrimaryKey(
                 name: "PK_Notifications",
                 table: "Notifications");
@@ -48,8 +46,7 @@ namespace RTN.API.Migrations
         }
 
         /// <inheritdoc />
-        protected override void Down(MigrationBuilder migrationBuilder)
-        {
+        protected override void Down(MigrationBuilder migrationBuilder) {
             migrationBuilder.DropPrimaryKey(
                 name: "PK_NotificationEntity",
                 table: "NotificationEntity");

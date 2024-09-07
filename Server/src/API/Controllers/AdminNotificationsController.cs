@@ -1,10 +1,13 @@
 using FluentValidation;
+
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+
 using RTN.API.Data;
 using RTN.API.Data.Entities;
 using RTN.API.Shared.Args;
 using RTN.API.Shared.Models;
+
 using static RTN.API.Shared.Extensions.HttpRequestExtensions;
 
 namespace RTN.API.Controllers;
@@ -19,57 +22,48 @@ namespace RTN.API.Controllers;
 public class AdminNotificationsController(
     ILogger<AdminNotificationsController> logger,
     MyDbContext dbContext)
-    : ControllerBase
-{
+    : ControllerBase {
     [HttpGet]
-    public async Task<IActionResult> Get()
-    {
-        try
-        {
+    public async Task<IActionResult> Get() {
+        try {
             logger.LogInformation("Getting user notifications.");
 
             var notifications = await dbContext
                 .Set<NotificationEntity>()
-                .Select(n => new NotificationModel
-                {
-                    Id = n.Id,
-                    Content = n.Content,
-                    RedirectUrl = n.RedirectUrl,
-                    IsRead = n.IsRead
-                })
+                .Select(n => new NotificationModel(
+                    n.Id,
+                    n.Content,
+                    n.RedirectUrl,
+                    n.IsRead
+                ))
                 .ToListAsync();
 
             return Ok(notifications);
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             logger.LogError(ex, "Failed to get notifications.");
             return BadRequest(ex.Message);
         }
     }
 
     [HttpGet("{notificationId:guid}")]
-    public async Task<IActionResult> Get([FromRoute] Guid notificationId)
-    {
-        try
-        {
+    public async Task<IActionResult> Get([FromRoute] Guid notificationId) {
+        try {
             logger.LogInformation("Getting notification.");
 
             var notification = await dbContext.Set<NotificationEntity>()
-                .Select(n => new NotificationModel
-                {
-                    Id = n.Id,
-                    Content = n.Content,
-                    RedirectUrl = n.RedirectUrl,
-                    IsRead = n.IsRead
-                })
+                .Select(n => new NotificationModel(
+                    n.Id,
+                    n.Content,
+                    n.RedirectUrl,
+                    n.IsRead
+                ))
                 .FirstOrDefaultAsync(n => n.Id == notificationId)
                 ?? throw new InvalidOperationException("Notification not found.");
 
             return Ok(notification);
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             logger.LogError(ex, "Failed to get notification.");
             return BadRequest(ex.Message);
         }
@@ -77,16 +71,13 @@ public class AdminNotificationsController(
 
     [HttpPost]
     public async Task<IActionResult> PostGlobal(
-        [FromBody] NotificationPostArgs args)
-    {
-        try
-        {
+        [FromBody] NotificationPostArgs args) {
+        try {
             logger.LogInformation("Creating notification.");
 
             new NotificationPostArgs.Validator().ValidateAndThrow(args);
 
-            var notification = new NotificationEntity
-            {
+            var notification = new NotificationEntity {
                 Content = args.Content,
                 RedirectUrl = args.RedirectUrl,
                 IsRead = false,
@@ -95,28 +86,24 @@ public class AdminNotificationsController(
             dbContext.Set<NotificationEntity>().Add(notification);
             await dbContext.SaveChangesAsync();
 
-            try
-            {
+            try {
                 logger.LogInformation("Sending notification.");
                 await SendNotificationAsync(
-                    message: new NotificationModel
-                    {
-                        Id = notification.Id,
-                        Content = notification.Content,
-                        RedirectUrl = notification.RedirectUrl,
-                        IsRead = notification.IsRead
-                    });
+                    message: new NotificationModel(
+                        notification.Id,
+                        notification.Content,
+                        notification.RedirectUrl,
+                        notification.IsRead
+                    ));
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(ex, "Failed to send notification.");
                 return BadRequest(ex.Message);
             }
 
             return NoContent();
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             logger.LogError(ex, "Failed to create notification.");
             return BadRequest(ex.Message);
         }
@@ -125,16 +112,13 @@ public class AdminNotificationsController(
     [HttpPost("{userId:guid}")]
     public async Task<IActionResult> PostIndividual(
         [FromRoute] Guid userId,
-        [FromBody] NotificationPostArgs args)
-    {
-        try
-        {
+        [FromBody] NotificationPostArgs args) {
+        try {
             logger.LogInformation("Creating notification.");
 
             new NotificationPostArgs.Validator().ValidateAndThrow(args);
 
-            var notification = new NotificationEntity
-            {
+            var notification = new NotificationEntity {
                 Content = args.Content,
                 RedirectUrl = args.RedirectUrl,
                 IsRead = false,
@@ -144,29 +128,25 @@ public class AdminNotificationsController(
             dbContext.Set<NotificationEntity>().Add(notification);
             await dbContext.SaveChangesAsync();
 
-            try
-            {
+            try {
                 logger.LogInformation("Sending notification.");
                 await SendNotificationAsync(
-                    message: new NotificationModel
-                    {
-                        Id = notification.Id,
-                        Content = notification.Content,
-                        RedirectUrl = notification.RedirectUrl,
-                        IsRead = notification.IsRead
-                    },
+                    message: new NotificationModel(
+                        notification.Id,
+                        notification.Content,
+                        notification.RedirectUrl,
+                        notification.IsRead
+                    ),
                     roomId: userId);
             }
-            catch (Exception ex)
-            {
+            catch (Exception ex) {
                 logger.LogError(ex, "Failed to send notification.");
                 return BadRequest(ex.Message);
             }
 
             return NoContent();
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             logger.LogError(ex, "Failed to create notification.");
             return BadRequest(ex.Message);
         }
@@ -175,10 +155,8 @@ public class AdminNotificationsController(
     [HttpPut("{Id:guid}")]
     public async Task<IActionResult> Put(
         [FromRoute] Guid Id,
-        [FromBody] NotificationPutArgs args)
-    {
-        try
-        {
+        [FromBody] NotificationPutArgs args) {
+        try {
             logger.LogInformation("Updating notification.");
 
             new NotificationPutArgs.Validator().ValidateAndThrow(args);
@@ -196,18 +174,15 @@ public class AdminNotificationsController(
 
             return NoContent();
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             logger.LogError(ex, "Failed to update notification.");
             return BadRequest(ex.Message);
         }
     }
 
     [HttpDelete("{Id:guid}")]
-    public async Task<IActionResult> Delete(Guid Id)
-    {
-        try
-        {
+    public async Task<IActionResult> Delete(Guid Id) {
+        try {
             logger.LogInformation("Deleting notification.");
 
             var notification = await dbContext.Set<NotificationEntity>()
@@ -219,8 +194,7 @@ public class AdminNotificationsController(
 
             return NoContent();
         }
-        catch (Exception ex)
-        {
+        catch (Exception ex) {
             logger.LogError(ex, "Failed to delete notification.");
             return BadRequest(ex.Message);
         }

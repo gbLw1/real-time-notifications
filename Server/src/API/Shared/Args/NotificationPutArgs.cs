@@ -1,10 +1,10 @@
 using System.Text.Json.Serialization;
+
 using FluentValidation;
 
 namespace RTN.API.Shared.Args;
 
-public class NotificationPutArgs
-{
+public class NotificationPutArgs {
     [JsonPropertyName("content")]
     public required string Content { get; set; }
 
@@ -14,10 +14,8 @@ public class NotificationPutArgs
     [JsonPropertyName("isRead")]
     public bool IsRead { get; set; }
 
-    public class Validator : AbstractValidator<NotificationPutArgs>
-    {
-        public Validator()
-        {
+    public class Validator : AbstractValidator<NotificationPutArgs> {
+        public Validator() {
             RuleFor(x => x.Content)
                 .NotEmpty()
                 .WithMessage("Content is required.")

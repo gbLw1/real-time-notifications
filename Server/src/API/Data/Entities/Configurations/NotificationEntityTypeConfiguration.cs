@@ -3,10 +3,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 namespace RTN.API.Data.Entities.Configurations;
 
 public class NotificationEntityConfiguration
-    : BaseEntityTypeConfiguration<NotificationEntity>
-{
-    public override void Configure(EntityTypeBuilder<NotificationEntity> builder)
-    {
+    : BaseEntityTypeConfiguration<NotificationEntity> {
+    public override void Configure(EntityTypeBuilder<NotificationEntity> builder) {
         base.Configure(builder);
 
         builder.Property(n => n.Content)

@@ -1,7 +1,6 @@
 namespace RTN.API.Data.Entities;
 
-public class LoginEntity : BaseEntity
-{
+public class LoginEntity : BaseEntity {
     public required string PasswordHash { get; set; }
     public required Guid? AuthToken { get; set; }
     public required DateTime? AuthTokenExpiryTime { get; set; }

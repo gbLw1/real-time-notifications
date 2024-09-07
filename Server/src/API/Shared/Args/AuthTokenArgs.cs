@@ -1,20 +1,18 @@
 using System.Text.Json.Serialization;
+
 using FluentValidation;
 
 namespace RTN.API.Shared.Args;
 
-public class AuthTokenArgs
-{
+public class AuthTokenArgs {
     [JsonPropertyName("email")]
     public required string Email { get; set; }
 
     [JsonPropertyName("password")]
     public required string Password { get; set; }
 
-    public class Validator : AbstractValidator<AuthTokenArgs>
-    {
-        public Validator()
-        {
+    public class Validator : AbstractValidator<AuthTokenArgs> {
+        public Validator() {
             RuleFor(x => x.Email)
                 .NotEmpty()
                 .WithMessage("Email is required.")

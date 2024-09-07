@@ -2,10 +2,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace RTN.API.Data.Entities.Configurations;
 
-public class LoginEntityTypeConfiguration : BaseEntityTypeConfiguration<LoginEntity>
-{
-    public override void Configure(EntityTypeBuilder<LoginEntity> builder)
-    {
+public class LoginEntityTypeConfiguration : BaseEntityTypeConfiguration<LoginEntity> {
+    public override void Configure(EntityTypeBuilder<LoginEntity> builder) {
         base.Configure(builder);
 
         builder.Property(l => l.PasswordHash)
@@ -22,8 +20,8 @@ public class LoginEntityTypeConfiguration : BaseEntityTypeConfiguration<LoginEnt
         builder.Property(l => l.RefreshTokenExpiryTime);
 
         builder.HasOne(l => l.User)
-          .WithMany(u => u.Logins)
-          .HasForeignKey(l => l.UserId)
-          .IsRequired();
+            .WithMany(u => u.Logins)
+            .HasForeignKey(l => l.UserId)
+            .IsRequired();
     }
 }

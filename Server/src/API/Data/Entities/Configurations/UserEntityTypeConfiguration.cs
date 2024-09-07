@@ -2,10 +2,8 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace RTN.API.Data.Entities.Configurations;
 
-public class UserEntityTypeConfiguration : BaseEntityTypeConfiguration<UserEntity>
-{
-    public override void Configure(EntityTypeBuilder<UserEntity> builder)
-    {
+public class UserEntityTypeConfiguration : BaseEntityTypeConfiguration<UserEntity> {
+    public override void Configure(EntityTypeBuilder<UserEntity> builder) {
         base.Configure(builder);
 
         builder.Property(u => u.Name)
@@ -17,9 +15,9 @@ public class UserEntityTypeConfiguration : BaseEntityTypeConfiguration<UserEntit
             .IsRequired();
 
         builder.HasMany(u => u.Logins)
-        .WithOne(l => l.User)
-        .HasForeignKey(l => l.UserId)
-        .IsRequired();
+            .WithOne(l => l.User)
+            .HasForeignKey(l => l.UserId)
+            .IsRequired();
 
         builder.HasMany(u => u.Notifications)
             .WithOne(n => n.User)
