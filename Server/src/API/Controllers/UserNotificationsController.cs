@@ -5,10 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 using RTN.API.Data;
 using RTN.API.Data.Entities;
-using RTN.API.Shared.Extensions;
 using RTN.API.Shared.Models;
-
-using static RTN.API.Shared.Extensions.HttpRequestExtensions;
 
 namespace RTN.API.Controllers;
 

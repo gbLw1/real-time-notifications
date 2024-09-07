@@ -5,10 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 using RTN.API.Data;
 using RTN.API.Data.Entities;
+using RTN.API.Services;
 using RTN.API.Shared.Args;
 using RTN.API.Shared.Models;
-
-using static RTN.API.Shared.Extensions.HttpRequestExtensions;
 
 namespace RTN.API.Controllers;
 
@@ -71,7 +70,8 @@ public class AdminNotificationsController(
 
     [HttpPost]
     public async Task<IActionResult> PostGlobal(
-        [FromBody] NotificationPostArgs args) {
+        [FromBody] NotificationPostArgs args,
+        [FromServices] NotificationService notificationService) {
         try {
             logger.LogInformation("Creating notification.");
 
@@ -88,7 +88,7 @@ public class AdminNotificationsController(
 
             try {
                 logger.LogInformation("Sending notification.");
-                await SendNotificationAsync(
+                await notificationService.SendNotificationAsync(
                     message: new NotificationModel(
                         notification.Id,
                         notification.Content,
@@ -112,7 +112,8 @@ public class AdminNotificationsController(
     [HttpPost("{userId:guid}")]
     public async Task<IActionResult> PostIndividual(
         [FromRoute] Guid userId,
-        [FromBody] NotificationPostArgs args) {
+        [FromBody] NotificationPostArgs args,
+        [FromServices] NotificationService notificationService) {
         try {
             logger.LogInformation("Creating notification.");
 
@@ -130,7 +131,7 @@ public class AdminNotificationsController(
 
             try {
                 logger.LogInformation("Sending notification.");
-                await SendNotificationAsync(
+                await notificationService.SendNotificationAsync(
                     message: new NotificationModel(
                         notification.Id,
                         notification.Content,

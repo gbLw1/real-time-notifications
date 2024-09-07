@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
 using RTN.API.Data;
+using RTN.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -47,6 +48,13 @@ builder.Services.AddSwaggerGen(o => {
 builder.Services.AddDbContext<MyDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
 );
+
+var notificationApiBaseUrl = builder.Configuration["NotificationApiSettings:BaseUrl"]
+    ?? throw new ArgumentNullException("NotificationApi:BaseUrl is required in appsettings.json or environment variables.");
+
+builder.Services.AddHttpClient<NotificationService>(client => {
+    client.BaseAddress = new Uri(notificationApiBaseUrl);
+});
 
 var app = builder.Build();
 
