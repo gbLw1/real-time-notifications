@@ -8,8 +8,6 @@ using RTN.API.Data.Entities;
 using RTN.API.Shared.Extensions;
 using RTN.API.Shared.Models;
 
-using static RTN.API.Shared.Extensions.HttpRequestExtensions;
-
 namespace RTN.API.Controllers;
 
 [ApiController]
@@ -23,7 +21,7 @@ public class UserNotificationsController(
         try {
             logger.LogInformation("Getting user notifications.");
 
-            var authToken = await Request.GetAuthTokenAsync(dbContext);
+            var authToken = this.GetAuthToken()!;
 
             var notifications = await dbContext
                 .Set<NotificationEntity>()
@@ -48,7 +46,7 @@ public class UserNotificationsController(
         try {
             logger.LogInformation("Getting notification.");
 
-            var authToken = await Request.GetAuthTokenAsync(dbContext);
+            var authToken = this.GetAuthToken()!;
 
             var notification = await dbContext
                 .Set<NotificationEntity>()
@@ -73,7 +71,7 @@ public class UserNotificationsController(
         try {
             logger.LogInformation("Deleting all notifications.");
 
-            var authToken = await Request.GetAuthTokenAsync(dbContext);
+            var authToken = this.GetAuthToken()!;
 
             var notifications = await dbContext.Set<NotificationEntity>()
                 .Where(n => n.UserId == authToken.UserId)
@@ -99,7 +97,7 @@ public class UserNotificationsController(
         try {
             logger.LogInformation("Deleting notification.");
 
-            var authToken = await Request.GetAuthTokenAsync(dbContext);
+            var authToken = this.GetAuthToken()!;
 
             var notification = await dbContext.Set<NotificationEntity>()
                 .Where(n => n.UserId == authToken.UserId)
@@ -126,7 +124,7 @@ public class UserNotificationsController(
         try {
             logger.LogInformation("Toggling notification read status.");
 
-            var authToken = await Request.GetAuthTokenAsync(dbContext);
+            var authToken = this.GetAuthToken()!;
 
             var notification = await dbContext.Set<NotificationEntity>()
                 .Where(n => n.UserId == authToken.UserId)

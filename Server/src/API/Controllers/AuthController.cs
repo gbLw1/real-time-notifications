@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 using FluentValidation;
 
 using Microsoft.AspNetCore.Mvc;
@@ -5,8 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 using RTN.API.Data;
 using RTN.API.Data.Entities;
+using RTN.API.Services;
 using RTN.API.Shared.Args;
-using RTN.API.Shared.Models;
+using RTN.API.Shared.Security;
 
 namespace RTN.API.Controllers;
 
@@ -17,7 +20,9 @@ public class AuthController(
     MyDbContext dbContext)
     : ControllerBase {
     [HttpPost("token")]
-    public async Task<IActionResult> Login(AuthTokenArgs args) {
+    public async Task<IActionResult> Login(
+        [FromBody] AuthTokenArgs args,
+        [FromServices] CryptoService cryptoService) {
         try {
             logger.LogInformation("Logging in.");
 
@@ -33,19 +38,27 @@ public class AuthController(
                 throw new UnauthorizedAccessException("Invalid email or password.");
             }
 
-            var authToken = Guid.NewGuid();
-            var expiresIn = DateTime.UtcNow.AddHours(1);
             var refreshToken = Guid.NewGuid();
+            var refreshTokenExpiryTime = DateTime.UtcNow.AddDays(30);
 
-            login.AuthToken = authToken;
-            login.AuthTokenExpiryTime = expiresIn;
             login.RefreshToken = refreshToken;
-            login.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            login.RefreshTokenExpiryTime = refreshTokenExpiryTime;
 
             dbContext.Update(login);
             await dbContext.SaveChangesAsync();
 
-            return Ok(new AuthTokenModel(authToken, expiresIn, refreshToken, login.UserId));
+            var authToken = new AuthToken(
+                UserId: login.UserId,
+                LoginId: login.Id,
+                ExpiresIn: DateTime.UtcNow.AddDays(7));
+
+            var result = new AuthTokenModel(
+                AccessToken: cryptoService.Encrypt(JsonSerializer.Serialize(authToken)),
+                ExpiresIn: authToken.ExpiresIn,
+                RefreshToken: refreshToken,
+                SocketRoom: login.UserId);
+
+            return Ok(result);
         }
         catch (UnauthorizedAccessException ex) {
             logger.LogError(ex, "Failed to login with 401.");
