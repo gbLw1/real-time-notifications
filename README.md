@@ -37,4 +37,9 @@ Also, I might use this project as a base for future implementations in my curren
 
 - Swagger documentation (summary)
 - Swagger Authorize Endpoint
-- HttpClient DI
+
+## How to test
+
+1. Run the socket, the API and the client
+2. Create a notification using the swagger
+3. Check the notification in real time in the client
