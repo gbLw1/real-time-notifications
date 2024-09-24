@@ -1,10 +1,10 @@
 using System.Text.Json;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 
 using RTN.API.Data;
 using RTN.API.Services;
+using RTN.API.Shared.Configuration;
 
 using Swashbuckle.AspNetCore.SwaggerGen;
 
@@ -37,41 +37,7 @@ public static class WebApplicationExtensions {
 
         // Swagger
         builder.Services.AddEndpointsApiExplorer();
-        builder.Services.AddSwaggerGen(o => {
-            o.SwaggerDoc("v1", new() { Title = "RTN.API", Version = "v1" });
-
-            // o.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme {
-            //     Name = "Authorization",
-            //     Description = "Authorization header using the Bearer scheme. Example: \"Authorization: Bearer {token}\"",
-            //     Type = SecuritySchemeType.Http,
-            //     BearerFormat = "Bearer {token}",
-            //     In = ParameterLocation.Header,
-            //     Scheme = "Bearer",
-            // });
-
-            o.AddSecurityDefinition("GUID", new OpenApiSecurityScheme {
-                In = ParameterLocation.Header,
-                Description = "Please enter your GUID token in the field. Example: '12345678-1234-1234-1234-123456789012'",
-                Name = "Authorization",
-                Type = SecuritySchemeType.ApiKey,
-                Scheme = "GUID"
-            });
-
-            o.AddSecurityRequirement(new OpenApiSecurityRequirement
-            {
-                {
-                    new OpenApiSecurityScheme
-                    {
-                        Reference = new OpenApiReference
-                        {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "GUID"
-                        }
-                    },
-                    Array.Empty<string>()
-                }
-            });
-        });
+        builder.Services.AddSwaggerConfiguration();
 
         // Database config
         builder.Services.AddDbContext<MyDbContext>(options =>

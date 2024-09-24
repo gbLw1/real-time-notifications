@@ -1,5 +1,6 @@
 using FluentValidation;
 
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,8 @@ public class UserNotificationsController(
     ILogger<UserNotificationsController> logger,
     MyDbContext dbContext)
     : ControllerBase {
+
+    [Authorize]
     [HttpGet]
     public async Task<IActionResult> Get() {
         try {
@@ -41,6 +44,7 @@ public class UserNotificationsController(
         }
     }
 
+    [Authorize]
     [HttpGet("{notificationId:guid}")]
     public async Task<IActionResult> Get([FromRoute] Guid notificationId) {
         try {
@@ -66,6 +70,7 @@ public class UserNotificationsController(
         }
     }
 
+    [Authorize]
     [HttpDelete]
     public async Task<IActionResult> Delete() {
         try {
@@ -92,6 +97,7 @@ public class UserNotificationsController(
         }
     }
 
+    [Authorize]
     [HttpDelete("{Id:guid}")]
     public async Task<IActionResult> Delete(Guid Id) {
         try {
@@ -119,6 +125,7 @@ public class UserNotificationsController(
         }
     }
 
+    [Authorize]
     [HttpPatch("{Id:guid}/toggle-read")]
     public async Task<IActionResult> ToggleRead(Guid Id) {
         try {
