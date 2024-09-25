@@ -9,15 +9,10 @@ public class LoginEntityTypeConfiguration : BaseEntityTypeConfiguration<LoginEnt
         builder.Property(l => l.PasswordHash)
             .IsRequired();
 
-        builder.Property(l => l.AuthToken)
-            .HasMaxLength(250);
-
-        builder.Property(l => l.AuthTokenExpiryTime);
-
         builder.Property(l => l.RefreshToken)
             .HasMaxLength(250);
 
-        builder.Property(l => l.RefreshTokenExpiryTime);
+        builder.Property(l => l.RefreshTokenExpirationTime);
 
         builder.HasOne(l => l.User)
             .WithMany(u => u.Logins)

@@ -39,10 +39,9 @@ public class AuthController(
             }
 
             var refreshToken = Guid.NewGuid();
-            var refreshTokenExpiryTime = DateTime.UtcNow.AddDays(30);
 
             login.RefreshToken = refreshToken;
-            login.RefreshTokenExpiryTime = refreshTokenExpiryTime;
+            login.RefreshTokenExpirationTime = DateTime.UtcNow.AddDays(30);
 
             dbContext.Update(login);
             await dbContext.SaveChangesAsync();
@@ -97,12 +96,10 @@ public class AuthController(
             await dbContext.SaveChangesAsync();
 
             var login = new LoginEntity {
-                AuthToken = Guid.NewGuid(),
                 PasswordHash = passwordHash,
                 RefreshToken = Guid.NewGuid(),
                 UserId = userEntity.Id,
-                AuthTokenExpiryTime = DateTime.UtcNow.AddHours(1),
-                RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7)
+                RefreshTokenExpirationTime = DateTime.UtcNow.AddDays(7)
             };
 
             await dbContext.Set<LoginEntity>().AddAsync(login);

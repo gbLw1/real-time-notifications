@@ -97,8 +97,12 @@ public class AdminNotificationsController(
                     ));
             }
             catch (Exception ex) {
-                logger.LogError(ex, "Failed to send notification.");
-                return BadRequest(ex.Message);
+                logger.LogWarning(ex, "Failed to send notification.");
+                return Ok(new {
+                    success = true,
+                    hasWarning = true,
+                    message = ex.Message
+                });
             }
 
             return NoContent();
