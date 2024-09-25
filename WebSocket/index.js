@@ -45,6 +45,8 @@ io.on("connection", (socket) => {
 app.post("/send-notification", (req, res) => {
   const { message, roomId } = req.body;
 
+    console.log(req.body)
+
   if (!message) {
     return res.status(400).send("Message is required");
   }

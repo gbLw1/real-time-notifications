@@ -13,6 +13,12 @@ public class NotificationService(HttpClient httpClient) {
         var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
         var response = await httpClient.PostAsync("/send-notification", content);
+
+        if (!response.IsSuccessStatusCode) {
+            var errorResponse = await response.Content.ReadAsStringAsync();
+            throw new Exception($"Failed to send notification. {errorResponse}");
+        }
+
         response.EnsureSuccessStatusCode();
     }
 }
