@@ -1,3 +1,3 @@
 # TODO
 
-- Clean up LoginEntity
+- Clean up Migrations

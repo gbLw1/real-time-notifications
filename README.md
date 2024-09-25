@@ -36,7 +36,6 @@ Also, I might use this project as a base for future implementations in my curren
 ### Server
 
 - Swagger documentation (summary)
-- Swagger Authorize Endpoint
 
 ## How to test
 
